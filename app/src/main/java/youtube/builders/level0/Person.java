@@ -10,10 +10,6 @@ public class Person
     private String email;
     private String phone;
 
-    public Person()
-    {
-    }
-
     public String getFirstName()
     {
         return firstName;
