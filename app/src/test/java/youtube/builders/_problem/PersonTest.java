@@ -19,7 +19,7 @@ class PersonTest
         assertThat(person.getEmail()).isNull();
         assertThat(person.getPhone()).isNull();
     }
-    
+
     @Test
     void passingPhoneIntoEmailFieldDoesNotThrowException()
     {

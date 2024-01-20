@@ -1,9 +1,11 @@
-package youtube.builders.level2;
+package youtube.builders.sorcery2;
 
 import java.util.Collections;
 import java.util.List;
 
-// Level 2: validation
+// Dark arts level 2, interface chaining with multiple paths
+// Either: firstName then lastName, then anything
+// Or: email, then anything
 public class Person
 {
     private final String firstName;
@@ -21,7 +23,7 @@ public class Person
         this.phone = builder.phone;
     }
 
-    public static Builder builder()
+    public static FirstNameOrEmailSetter builder()
     {
         return new Builder();
     }
@@ -51,7 +53,43 @@ public class Person
         return phone;
     }
 
-    public static class Builder
+    public interface FirstNameOrEmailSetter
+    {
+        LastNameSetter firstName(String firstName);
+
+        NameOrOptionalFieldsSetter email(String email);
+    }
+
+    public interface LastNameSetter
+    {
+        EmailOrOptionalFieldsSetter lastName(String lastName);
+    }
+
+    public interface EmailOrOptionalFieldsSetter extends OptionalFieldsSetter
+    {
+        OptionalFieldsSetter email(String email);
+    }
+
+    public interface NameOrOptionalFieldsSetter extends OptionalFieldsSetter
+    {
+        LastNameThenOptionalFieldsSetter firstName(String firstName);
+    }
+
+    public interface LastNameThenOptionalFieldsSetter
+    {
+        OptionalFieldsSetter lastName(String lastName);
+    }
+
+    public interface OptionalFieldsSetter
+    {
+        OptionalFieldsSetter middleNames(List<String> middleNames);
+
+        OptionalFieldsSetter phone(String phone);
+
+        Person build();
+    }
+
+    private static class Builder implements FirstNameOrEmailSetter, LastNameSetter, EmailOrOptionalFieldsSetter, NameOrOptionalFieldsSetter, LastNameThenOptionalFieldsSetter, OptionalFieldsSetter
     {
         private String firstName;
         private List<String> middleNames = Collections.emptyList();
@@ -59,30 +97,35 @@ public class Person
         private String email;
         private String phone;
 
+        @Override
         public Builder firstName(String firstName)
         {
             this.firstName = firstName;
             return this;
         }
 
+        @Override
         public Builder middleNames(List<String> middleNames)
         {
             this.middleNames = middleNames;
             return this;
         }
 
+        @Override
         public Builder lastName(String lastName)
         {
             this.lastName = lastName;
             return this;
         }
 
+        @Override
         public Builder email(String email)
         {
             this.email = email;
             return this;
         }
 
+        @Override
         public Builder phone(String phone)
         {
             this.phone = phone;
@@ -91,16 +134,6 @@ public class Person
 
         public Person build()
         {
-            if (firstName == null)
-            {
-                throw new IllegalStateException("firstName is required");
-            }
-
-            if (lastName == null)
-            {
-                throw new IllegalStateException("lastName is required");
-            }
-
             return new Person(this);
         }
     }

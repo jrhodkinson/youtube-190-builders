@@ -25,7 +25,7 @@ tasks.named<Test>("test") {
         // descriptor.className is either youtube.builders._problem.PersonTest or youtube.builders.levelN.PersonTest
         // where N is an integer
 
-        val testRegex = ".*((_problem)|(level(\\d+)))\\.PersonTest".toRegex()
+        val testRegex = ".*((_problem)|(level\\d+)|(sorcery\\d+))\\.PersonTest".toRegex()
 
         if (!descriptor.className!!.matches(testRegex)) {
             println("[${descriptor.className}] > ${descriptor.displayName}: ${result.resultType}")
@@ -41,9 +41,11 @@ tasks.named<Test>("test") {
         if (problemOrLevel == "_problem") {
             personType = "Person"
         } else if (problemOrLevel.startsWith("level")) {
-            personType = "Level ${problemOrLevel.substring(5)}"
+            personType = "Level ${problemOrLevel.substring("level".length)}"
+        } else if (problemOrLevel.startsWith("sorcery")) {
+            personType = "Dark arts level ${problemOrLevel.substring("sorcery".length)}"
         } else {
-            personType = "Unknown"
+            throw IllegalStateException("Unexpected test class name: ${descriptor.className}")
         }
 
         println("[$personType] > ${descriptor.displayName}: ${result.resultType}")
