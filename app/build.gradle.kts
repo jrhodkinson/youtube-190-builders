@@ -1,5 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestLogging
-
 plugins {
     java
     idea
@@ -24,6 +22,30 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 
     afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
-        println("[${descriptor.className}] > ${descriptor.displayName}: ${result.resultType}")
+        // descriptor.className is either youtube.builders._problem.PersonTest or youtube.builders.levelN.PersonTest
+        // where N is an integer
+
+        val testRegex = ".*((_problem)|(level(\\d+)))\\.PersonTest".toRegex()
+
+        if (!descriptor.className!!.matches(testRegex)) {
+            println("[${descriptor.className}] > ${descriptor.displayName}: ${result.resultType}")
+            return@KotlinClosure2
+        }
+
+        // descriptor.className is either youtube.builders._problem.PersonTest or youtube.builders.levelN.PersonTest
+
+        // extract the problem or level number from the test class name
+        val problemOrLevel = testRegex.find(descriptor.className!!)!!.groupValues[1]
+        var personType = ""
+
+        if (problemOrLevel == "_problem") {
+            personType = "Person"
+        } else if (problemOrLevel.startsWith("level")) {
+            personType = "Level ${problemOrLevel.substring(5)}"
+        } else {
+            personType = "Unknown"
+        }
+
+        println("[$personType] > ${descriptor.displayName}: ${result.resultType}")
     }))
 }

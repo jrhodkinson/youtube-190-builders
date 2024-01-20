@@ -7,6 +7,6 @@ Explore the code!
 To run the tests, execute:
 
 ```bash
-./gradlew test # on Linux or Mac
-gradlew.bat test # on Windows
+./gradlew clean test --no-build-cache # on Linux
+gradlew.bat clean test --no-build-cache # on Windows
 ```
