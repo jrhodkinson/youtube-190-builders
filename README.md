@@ -1,6 +1,6 @@
 # Java builder tutorial
 
-This is the source code to accompany the video tutorial (link to be added).
+This is the source code to accompany the video tutorial [Java Builder Pattern](https://youtu.be/sZYfZrA-gA0).
 
 Explore the code!
 
